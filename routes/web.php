@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PublicacionesController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,5 +30,9 @@ Route::post('/registrarseForm',[UsuarioController::class,'verificarRegistro'])->
 //Rutas para usuario
 Route::prefix('/-')->middleware("VerificarSesion")->group(function (){
     Route::get('/inicio',[UsuarioController::class,'inicio'])->name('inicio');
+    //Publicaciones
+    Route::post('/registroPublicacion',[PublicacionesController::class,'crearPublicacion'])->name('registrarP.form');
+    //Enviar correo
+    Route::get('/email',[UsuarioController::class,'enviar'])->name('email');
 
 });

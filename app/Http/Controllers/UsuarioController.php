@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Solicitudes;
+use App\Models\Publicaciones;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Image;
 
@@ -71,7 +74,6 @@ class UsuarioController extends Controller
         //Metodos para la imagen
         if ($datos->hasFile('imagen')) {
             $file = $datos->file("imagen");
-            //$nombrearchivo  = str_slug($request->slug).".".$file->getClientOriginalExtension();
             $nombrearchivo  = $this->nombreRandom().'.'.$file->getClientOriginalName();
             $file->move(public_path("img/perfil/"),$nombrearchivo);
         }
@@ -110,6 +112,12 @@ class UsuarioController extends Controller
     //Pantalla de inicio
     public function inicio()
     {
-        return view('inicio');
+        $publicaciones = Publicaciones::get();
+        return view('inicio',["publicaciones"=>$publicaciones]);
+    }
+    //Correo
+    public function enviar()
+    {
+        Mail::to(session('usuario')->correo)->send(new Solicitudes());
     }
 }

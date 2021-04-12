@@ -2,83 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Publicaciones;
 use Illuminate\Http\Request;
 
 class PublicacionesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    //Registrar publicacion
+    public function crearPublicacion(Request $datos)
     {
+        $descripcion = $datos->textarea;
+        //Metodos para la imagen
+        if ($datos->hasFile('imagen')) {
+            $file = $datos->file("imagen");
+            $nombrearchivo  = $this->nombreRandom().'.'.$file->getClientOriginalName();
+            $file->move(public_path("img/publicaciones/"),$nombrearchivo);
+        }
         //
+        $publicacion = new Publicaciones();
+        $publicacion->id_usuario = session('usuario')->id;
+        $publicacion->descripcion = $descripcion;
+        $publicacion->imagen = $nombrearchivo;
+        $publicacion->save();
+        /*$publicaciones= Publicaciones::get();
+            return view("inicio",["estatus"=> "success", "mensaje"=> "¡Cuenta Creada!"]);
+*/
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    /*
+    //Editar publicacion
+    public function editarPublicacion(Type $var = null)
     {
-        //
+        
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    //Eliminar publicacion
+    public function eliminarPublicacion(Type $var = null)
     {
-        //
+        
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    //Mostrar mis publicaciones en perfil
+    public function miPerfil(Type $var = null)
     {
-        //
+         
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    //Mostrar las publicaciones de mis amigos
+    public function publicacionesInicio(Type $var = null)
     {
-        //
+         
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    */
+    
 }
