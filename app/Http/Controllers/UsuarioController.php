@@ -6,9 +6,19 @@ use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Image;
 
 class UsuarioController extends Controller
 {
+    //
+    protected function nombreRandom() {
+        $nombre = '';
+        $keys = array_merge( range('a','z'), range(0,9) );
+        for($i=0; $i<20; $i++) {
+           $nombre .= $keys[array_rand($keys)];
+        }
+        return $nombre;
+     }
     //Funciones login
     public function login()
     {
@@ -42,29 +52,49 @@ class UsuarioController extends Controller
     //Funciones registrarse
     public function registrarse()
     {
-        return view('login');
+        return view('registro');
     }
+    //
     public function verificarRegistro(Request $datos)
     {
-
-        if(!$datos->correo || !$datos->password1 || !$datos->password2)
-            return view("registro",["estatus"=> "error", "mensaje"=> "¡Falta información!"]);
-
         $usuario = Usuarios::where('correo',$datos->correo)->first();
         if($usuario)
             return view("registro",["estatus"=> "error", "mensaje"=> "¡El correo ya se encuentra registrado!"]);
 
+        $nombreUsuario = $datos->nombreUsuario;
+        $nombre =  $datos->nombre;
+        $apellidoPaterno =  $datos->apellidoPaterno;
+        $apellidoMaterno =  $datos->apellidoMaterno;
+        $edad =  $datos->edad;
+        $fechaNacimiento =  $datos->fechaNacimiento;
+        $sexo =  $datos->sexo;
+        //Metodos para la imagen
+        if ($datos->hasFile('imagen')) {
+            $file = $datos->file("imagen");
+            //$nombrearchivo  = str_slug($request->slug).".".$file->getClientOriginalExtension();
+            $nombrearchivo  = $this->nombreRandom().'.'.$file->getClientOriginalName();
+            $file->move(public_path("img/perfil/"),$nombrearchivo);
+        }
+        //
         $correo = $datos->correo;
-        $password2 = $datos->password2;
-        $password1 = $datos->password1;
+        $password2 = $datos->password;
+        $password1 = $datos->password2;
 
         if($password1 != $password2){
             return view("registro",["estatus" => "¡Las contraseñas son diferentes!"]);
         }
 
         $usuario = new Usuarios();
+        $usuario->nombre_usuario = $nombreUsuario;
+        $usuario->nombre = $nombre;
+        $usuario->apellido_p= $apellidoPaterno;
+        $usuario->apellido_m = $apellidoMaterno;
+        $usuario->edad = $edad;
+        $usuario->fecha_nacimiento = $fechaNacimiento;
+        $usuario->sexo = $sexo;
         $usuario->correo =  $correo;
         $usuario->password = bcrypt($password1);
+        $usuario->foto_perfil = $nombrearchivo;
         $usuario->save();
             return view("login",["estatus"=> "success", "mensaje"=> "¡Cuenta Creada!"]);
 
@@ -76,5 +106,10 @@ class UsuarioController extends Controller
             Session::forget('usuario');
 
         return redirect()->route('bienvenida');
+    }
+    //Pantalla de inicio
+    public function inicio()
+    {
+        return view('inicio');
     }
 }

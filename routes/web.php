@@ -21,13 +21,13 @@ Route::get('/', function () {
 //Rutas login-Registrarse
 //Login
 Route::get('/login',[UsuarioController::class,'login'])->name('login');
-Route::get('/login',[UsuarioController::class,'verificarLogin'])->name('login.form');
+Route::post('/loginForm',[UsuarioController::class,'verificarLogin'])->name('login.form');
 //Registrarse
 Route::get('/registrarse',[UsuarioController::class,'registrarse'])->name('registrarse');
-Route::get('/registrarse',[UsuarioController::class,'verificarRegistro'])->name('registrarse.form');
+Route::post('/registrarseForm',[UsuarioController::class,'verificarRegistro'])->name('registrarse.form');
 
 //Rutas para usuario
-Route::prefix('/-')->middleware("VerificarUsuario")->group(function (){
-    Route::get('/inicio',[UsuarioController::class,'login'])->name('inicio');
+Route::prefix('/-')->middleware("VerificarSesion")->group(function (){
+    Route::get('/inicio',[UsuarioController::class,'inicio'])->name('inicio');
 
 });

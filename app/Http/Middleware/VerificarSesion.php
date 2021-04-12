@@ -17,7 +17,7 @@ class VerificarSesion
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!Session::has('-'))
+        if(!Session::has('usuario'))
             return redirect()->route("login",["r"=> encrypt($request->getRequestUri())]);
 
         return $next($request);

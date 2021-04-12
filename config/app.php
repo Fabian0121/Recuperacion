@@ -177,6 +177,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         //Doom PDF
         Barryvdh\DomPDF\ServiceProvider::class,
+        //Imagen
+        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*
@@ -231,6 +233,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //Doom PDF
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        //Imagen
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 
